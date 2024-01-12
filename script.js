@@ -1,3 +1,10 @@
+/**
+ * Calculator Logic
+ * This script provides the functionality for a basic calculator. 
+ * It supports addition, subtraction, multiplication, division, and handling of decimal numbers.
+ */
+
+// Initial setup of calculator's state
 let operator = null;
 let firstNumber = null;
 let firstNumberSet = false;
@@ -9,73 +16,112 @@ let operatorSelected = false;
 let result = null;
 let dot = false;
 
+// Access the calculator's display
 let display = document.getElementById('display');
-display.textContent = displayNumber;
+updateDisplay();
 
+/**
+ * Updates the calculator's display with the current display number.
+ */
+function updateDisplay() {
+    display.textContent = displayNumber;
+}
+
+// Event listener for number buttons
 document.querySelectorAll('.number').forEach(button => {
     button.addEventListener('click', function() {
+        handleNumberInput(this.textContent);
+        
+    });
+});
+
+// Handles the logic for when a number is pressed.
+function handleNumberInput(number) {
+    if (displayNumber === 0 || operatorSelected) {
+        displayNumber = number;
+        operatorSelected = false;
+    } else {
+        displayNumber += number;
+    }
+    updateDisplay();
+}
+
+// Event listener for dot button
+document.querySelectorAll('.dot').forEach(button => {
+    button.addEventListener('click', function() {
         pressedNumber = this.textContent;
+        dotInput();
+        
+    });
+});
+
+// Checks if on the display is already a dot and handels the outcome.
+function dotInput() {
+    if (!dot) {
         if (displayNumber === 0 || operatorSelected) {
             displayNumber = pressedNumber;
             operatorSelected = false;
         } else  {
-            displayNumber = displayNumber + pressedNumber;
+            displayNumber += pressedNumber;
         }
-        display.textContent = displayNumber;
-        
-    });
-});
+        updateDisplay();
+    }
+    dot = true;
+}
 
-document.querySelectorAll('.dot').forEach(button => {
-    button.addEventListener('click', function() {
-        pressedNumber = this.textContent;
-        
-        if (!dot) {
-            if (displayNumber === 0 || operatorSelected) {
-                displayNumber = pressedNumber;
-                operatorSelected = false;
-            } else  {
-                displayNumber = displayNumber + pressedNumber;
-            }
-            display.textContent = displayNumber;
-        }
-        dot = true;
-    });
-});
-
-
-
+// Event listener for operator buttons
 document.querySelectorAll('.operator').forEach(button => {
     button.addEventListener('click', function() {
-        dot = false;
-        displayNumber = parseFloat(display.textContent);
-
-        if (!firstNumberSet) {
-            setFristNumber(displayNumber);
-            console.log("First Number set to " + firstNumber);
-        } else {
-            setSecondNumber(displayNumber);
-            console.log("Second Number set to " + secondNumber);
-        }
-
-        if (firstNumberSet && secondNumberSet) {
-            result = operate(operator, firstNumber, secondNumber);
-            console.log("Result: " + result);
-            setFristNumber(result);
-            secondNumberSet = false;
-            display.textContent = result;
-        } 
-
-        operator = this.textContent; // Saves the operator
-        
-        console.log("Operator set to " + operator); 
-        operatorSelected = true; // To start the displayNumber new        
+        saveNumber(); 
+        saveOperator(this.textContent);
+                
     });
 });
 
+// Saves the number that is on the display when an operator is pressed
+function saveNumber() {
+    dot = false;
+    displayNumber = parseFloat(display.textContent);
+
+    setNumber(displayNumber);
+    doOperation();
+}
+
+// Check if first and second number are set and if yes: operate.
+function doOperation() {
+    if (firstNumberSet && secondNumberSet) {
+        result = operate(operator, firstNumber, secondNumber);
+        setFirstNumber(result);
+        secondNumberSet = false;
+        display.textContent = result;
+    }
+}
+
+function setNumber(number) {
+    if (!firstNumberSet) {
+        setFirstNumber(number);
+    } else {
+        setSecondNumber(number);
+    }
+}
+
+// Saves the operator that is pressed
+function saveOperator(operatorInput) {
+    // Saves the operator
+    operator = operatorInput;
+    
+    // To start the displayNumber new
+    operatorSelected = true; 
+}
+
+// Event listener for clear button
 document.querySelectorAll('.clear-memory').forEach(button => {
-    button.addEventListener('click', function() {
-        operator = null;
+    button.addEventListener('click', resetCalculator);
+});
+
+// Resets the calculator to its initial state.
+function resetCalculator() {
+    operator = null;
         firstNumber = null;
         firstNumberSet = false;
         secondNumber = null;
@@ -85,9 +131,9 @@ document.querySelectorAll('.clear-memory').forEach(button => {
         operatorSelected = false;
         result = null;
 
-        display.textContent = displayNumber;
-    });
-});
+        updateDisplay();
+}
+
 
 document.querySelectorAll('.delete-last-number').forEach(button => {
     button.addEventListener('click', function() {
@@ -102,32 +148,27 @@ document.querySelectorAll('.delete-last-number').forEach(button => {
     });
 });
 
+// Event listener for equal button
 document.querySelectorAll('.equal').forEach(button => {
-    button.addEventListener('click', function() {
-        equal = true;
-        if (!firstNumberSet) {
-            setFristNumber(displayNumber);
-            console.log("First Number set to " + firstNumber);
-        } else {
-            setSecondNumber(displayNumber);
-            console.log("Second Number set to " + secondNumber);
-        }
-
-        if (firstNumberSet && secondNumberSet) {
-            result = operate(operator, firstNumber, secondNumber);
-            console.log("Result: " + result);
-            setFristNumber(result);
-    
-            secondNumberSet = false;
-            firstNumberSet = false;
-            display.textContent = result;
-
-            console.log("first number set to " + firstNumber);
-            console.log("first number set: " + firstNumberSet);
-        }
-    });
+    button.addEventListener('click', handleEqual);
 });
 
+// Sets the number and does operation but also sets first number to false.
+function handleEqual() {
+    equal = true;
+    setNumber(displayNumber);
+
+    if (firstNumberSet && secondNumberSet) {
+        result = operate(operator, firstNumber, secondNumber);
+        setFirstNumber(result);
+
+        secondNumberSet = false;
+        firstNumberSet = false;
+        display.textContent = result;
+    }
+}
+
+// Checks which operator was pressed and does math operation depanding on that.
 function operate (operator, a, b) {
     a = parseFloat(a);
     b = parseFloat(b);
@@ -143,7 +184,7 @@ function operate (operator, a, b) {
     }
 }
 
-function setFristNumber(number) {
+function setFirstNumber(number) {
     firstNumber = parseFloat(number);
     firstNumberSet = true;
 }
@@ -163,9 +204,22 @@ function subtract(a, b) {
 }
 
 function multiply(a, b) {
-    let result = a * b;
-    let resultString = result.toString();
+    return roundResult(a * b);
+}
 
+function divide(a, b) {
+    if (b === 0) {
+        return "Error";
+    } else {
+        return roundResult(a / b);
+        
+    }
+}
+
+// Check if result needs to be roundes and if yes do it up to 5 dezimals
+function roundResult(result) {
+    let resultString = result.toString();
+        
     // Prüfen, ob das Ergebnis Dezimalstellen hat
     if (resultString.includes('.')) {
         let decimalPart = resultString.split('.')[1];
@@ -174,22 +228,4 @@ function multiply(a, b) {
         }
     }
     return result;
-}
-
-function divide(a, b) {
-    if (b === 0) {
-        return "Error";
-    } else {
-        let result = a / b;
-        let resultString = result.toString();
-        
-        // Prüfen, ob das Ergebnis Dezimalstellen hat
-        if (resultString.includes('.')) {
-            let decimalPart = resultString.split('.')[1];
-            if (decimalPart.length > 5) {
-                return parseFloat(result.toFixed(5));
-            }
-        }
-        return result;
-    }
 }
