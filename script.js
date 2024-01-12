@@ -144,7 +144,7 @@ document.querySelectorAll('.delete-last-number').forEach(button => {
             displayNumber = 0; 
         }
 
-        display.textContent = displayNumber; 
+        updateDisplay();
     });
 });
 
