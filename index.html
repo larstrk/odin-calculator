@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Simple Calculator</title>
+    <title>Calculator</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="Screenshot 2024-01-12 at 10.32.24.png">
 </head>
 <body>
     <div class="calculator">
         <div class="display" id="display"></div>
         <div class="row-container">
             <div class="row-one">
-                <button class="big operator" id="clear-memory">AC</button>
-                <button class="big operator" id="delete-last-number">C</button>
+                <button class="big clear-memory" id="clear-memory">clear</button>
+                <button class="big delete-last-number" id="delete-last-number"><=</button>
             </div>
             <div class="row-two">
                 <button class="square number" id="seven">7</button>
                 <button class="square number" id="eight">8</button>
                 <button class="square number" id="nine">9</button>
-                <button class="square operator" id="divide">%</button>
+                <button class="square operator" id="divide">/</button>
             </div>
             <div class="row-three">
                 <button class="square number" id="four">4</button>
@@ -32,8 +33,8 @@
             </div>
             <div class="row-five">
                 <button class="square number" id="zero">0</button>
-                <button class="square operator" id="dot">.</button>
-                <button class="square operator" id="equal">=</button>
+                <button class="square dot" id="dot">.</button>
+                <button class="square equal" id="equal">=</button>
                 <button class="square operator" id="add">+</button>
             </div>
         </div>
